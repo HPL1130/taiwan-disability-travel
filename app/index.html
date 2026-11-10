@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>身障旅遊優惠通</title>
+<meta name="description" content="查詢台灣收費景點對身心障礙者與必要陪同者的門票優惠">
+<meta name="theme-color" content="#0f5c4d">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img src="icons/icon-192.png" alt="" width="36" height="36">
+    <div>
+      <h1>身障旅遊優惠通</h1>
+      <p class="sub" id="meta">載入中…</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="fontBtn" class="icon-btn" aria-label="調整字體大小" title="字體大小">A<span>+</span></button>
+    <button id="favTab" class="icon-btn" aria-pressed="false" aria-label="只看收藏" title="我的收藏">★</button>
+  </div>
+</header>
+
+<main>
+  <section class="filters" aria-label="搜尋與篩選">
+    <label class="search">
+      <span class="visually-hidden">搜尋景點</span>
+      <input id="q" type="search" placeholder="搜尋景點名稱、鄉鎮…" autocomplete="off" enterkeyhint="search">
+    </label>
+    <div class="row">
+      <label class="select">
+        <span>縣市</span>
+        <select id="county"><option value="">全部縣市</option></select>
+      </label>
+      <label class="select">
+        <span>排序</span>
+        <select id="sort">
+          <option value="county">依縣市</option>
+          <option value="save">最省錢優先</option>
+          <option value="price">票價低到高</option>
+          <option value="name">名稱</option>
+        </select>
+      </label>
+    </div>
+    <div class="chips" role="group" aria-label="景點類型" id="cats"></div>
+    <div class="toggles" role="group" aria-label="優惠條件">
+      <label class="toggle"><input type="checkbox" id="tSelfFree"><span>本人免費</span></label>
+      <label class="toggle"><input type="checkbox" id="tCompFree"><span>陪同者也免費</span></label>
+      <label class="toggle"><input type="checkbox" id="tComp"><span>陪同者有優惠</span></label>
+      <label class="toggle"><input type="checkbox" id="tAllFree"><span>含全民免費景點</span></label>
+    </div>
+  </section>
+
+  <p class="count" id="count" aria-live="polite"></p>
+  <ul class="list" id="list"></ul>
+  <button id="more" class="more" hidden>顯示更多</button>
+
+  <footer class="note">
+    <p>本資料整理自各縣市政府公告、觀光網站、場館官網等公開資訊，每筆附查核日期與來源。票價可能隨時調整，請以現場公告為準。</p>
+    <p>依《身心障礙者權益保障法》第59條：公營或公設民營場所，身障者本人免費；民營場所應予半價。經需求評估需要陪伴者，必要陪伴者以1人為限，可享相同優待。</p>
+    <p><a id="reportLink" href="#" target="_blank" rel="noopener">回報資料錯誤</a> · <span id="ver"></span></p>
+  </footer>
+</main>
+
+<dialog id="detail" aria-labelledby="dTitle">
+  <div class="sheet">
+    <button class="close" id="dClose" aria-label="關閉">✕</button>
+    <div id="dBody"></div>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>

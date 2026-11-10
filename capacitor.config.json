@@ -1,0 +1,6 @@
+{
+  "appId": "tw.hpl1130.disabilitytravel",
+  "appName": "身障旅遊優惠通",
+  "webDir": "app",
+  "android": { "allowMixedContent": false }
+}

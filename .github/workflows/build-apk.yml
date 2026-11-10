@@ -1,0 +1,66 @@
+name: 打包 APK
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', 'data/**', 'scripts/**', 'capacitor.config.json', 'package.json', '.github/workflows/build-apk.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/setup-java@v4
+        with: { distribution: 'temurin', java-version: '17' }
+      - name: xlsx 轉 JSON 並檢查資料
+        run: |
+          pip install openpyxl==3.1.5
+          python scripts/export.py
+      - name: 建立 Android 專案
+        run: |
+          npm install
+          npx cap add android
+          npx cap sync android
+      - name: 套用 App 圖示與啟動畫面
+        run: |
+          pip install pillow==11.0.0
+          python scripts/android_assets.py
+      - name: 編譯 APK
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          cd android
+          chmod +x gradlew
+          BT=$(ls $ANDROID_HOME/build-tools | sort -V | tail -1)
+          if [ -n "$KS_B64" ]; then
+            ./gradlew assembleRelease --no-daemon
+            echo "$KS_B64" | base64 -d > ../app.keystore
+            $ANDROID_HOME/build-tools/$BT/zipalign -f 4 app/build/outputs/apk/release/app-release-unsigned.apk ../aligned.apk
+            $ANDROID_HOME/build-tools/$BT/apksigner sign --ks ../app.keystore --ks-key-alias tdt \
+              --ks-pass env:KS_PASS --key-pass env:KS_PASS --out ../身障旅遊優惠通.apk ../aligned.apk
+            rm ../app.keystore
+          else
+            echo "未設定簽章金鑰，改輸出 debug 版（更新時需先移除舊版）"
+            ./gradlew assembleDebug --no-daemon
+            cp app/build/outputs/apk/debug/app-debug.apk ../身障旅遊優惠通.apk
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: 身障旅遊優惠通.apk
+      - name: 發布到 Releases（latest）
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: 身障旅遊優惠通 最新版
+          body: |
+            Android 安裝檔，下載後點開安裝（首次需允許「安裝不明來源應用程式」）。
+            資料會在有網路時自動更新為網站上的最新版本。
+          files: 身障旅遊優惠通.apk
+          make_latest: true

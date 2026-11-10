@@ -1,0 +1,15 @@
+{
+  "name": "taiwan-disability-travel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "身障旅遊優惠通：台灣收費景點身心障礙者與陪同者門票優惠查詢",
+  "scripts": {
+    "export": "python3 scripts/export.py",
+    "serve": "python3 -m http.server 8080 --directory app"
+  },
+  "devDependencies": {
+    "@capacitor/android": "6.2.1",
+    "@capacitor/cli": "6.2.1",
+    "@capacitor/core": "6.2.1"
+  }
+}

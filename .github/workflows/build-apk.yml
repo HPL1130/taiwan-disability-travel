@@ -43,17 +43,17 @@ jobs:
             echo "$KS_B64" | base64 -d > ../app.keystore
             $ANDROID_HOME/build-tools/$BT/zipalign -f 4 app/build/outputs/apk/release/app-release-unsigned.apk ../aligned.apk
             $ANDROID_HOME/build-tools/$BT/apksigner sign --ks ../app.keystore --ks-key-alias tdt \
-              --ks-pass env:KS_PASS --key-pass env:KS_PASS --out ../身障旅遊優惠通.apk ../aligned.apk
+              --ks-pass env:KS_PASS --key-pass env:KS_PASS --out ../tw-disability-travel.apk ../aligned.apk
             rm ../app.keystore
           else
             echo "未設定簽章金鑰，改輸出 debug 版（更新時需先移除舊版）"
             ./gradlew assembleDebug --no-daemon
-            cp app/build/outputs/apk/debug/app-debug.apk ../身障旅遊優惠通.apk
+            cp app/build/outputs/apk/debug/app-debug.apk ../tw-disability-travel.apk
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: 身障旅遊優惠通.apk
+          path: tw-disability-travel.apk
       - name: 發布到 Releases（latest）
         uses: softprops/action-gh-release@v2
         with:
@@ -62,5 +62,5 @@ jobs:
           body: |
             Android 安裝檔，下載後點開安裝（首次需允許「安裝不明來源應用程式」）。
             資料會在有網路時自動更新為網站上的最新版本。
-          files: 身障旅遊優惠通.apk
+          files: tw-disability-travel.apk
           make_latest: true
